@@ -6,7 +6,7 @@
 
 ---
 
-## 🧩 Project Overview
+##  Project Overview
 
 This project showcases an **AI Scheduling Assistant** that automatically processes incoming email requests and schedules shipments or production to fulfill them.
 
@@ -23,7 +23,7 @@ It uses **GPT-4**, **n8n**, **FastAPI**, **Streamlit**, and **PostgreSQL**.
 
 ---
 
-## 📦 Demo Use Case
+##  Demo Use Case
 
 ### **Use Case:**  
 Automate handling of urgent product requests from DCs to a manufacturing plant.
@@ -51,7 +51,7 @@ While the scenario is specific, the pattern applies to:
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 - **Python Backend:** FastAPI (REST API), PostgreSQL  
 - **Streamlit Frontend:** Dashboard to monitor requests & responses  
@@ -66,7 +66,7 @@ While the scenario is specific, the pattern applies to:
 
 ---
 
-## 🚀 Quickstart
+##  Quickstart
 
 ### 1. **Clone the repo**
 ```
@@ -109,7 +109,7 @@ For full setup, see `get_started.md`.
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 main.py                     # FastAPI backend (simulation logic)
@@ -124,7 +124,7 @@ LICENSE                     # MIT License
 
 ---
 
-## 🤝 How to Contribute or Test
+##  How to Contribute or Test
 
 ### **Contributions welcome!**
 
@@ -149,7 +149,7 @@ Please follow standard best practices:
 
 ---
 
-## 📜 License & Credits
+##  License & Credits
 
 This project is released under the **MIT License**.
 
