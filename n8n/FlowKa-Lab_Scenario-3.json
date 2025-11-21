@@ -1,0 +1,808 @@
+{
+  "name": "FlowKa-Lab\\Scenario-3",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an assistant that extracts urgent volume requests from Distribution Center (DC) emails.\n\nTASK:\nRead the email below and return ONLY a valid JSON object with these exact keys:\n\ndc_name: string\n\nsku_id: string\n\nrequested_qty: number (integer cases or pallets mentioned)\n\nrequested_ship_date: string in ISO format YYYY-MM-DD\n\nemail_subject: string\n\nemail_body: string\n\nIMPORTANT RULES:\n\nUse the product list below to infer the correct sku_id.\n\nIf the email describes a product using words like the commercial name, size, ml, etc., choose the closest match from the list and return its sku_id.\n\nIf you are not confident which product it is, set sku_id to null.\n\nPRODUCT CATALOG (sku_id | name | category | pack | line_priority):\n\nSHAMPOO_CITRUS_200 | Citrus Shampoo 200ml | Shampoo | 200ml bottle | 1\n\nCONDITIONER_HYDRATE_200 | Hydrating Conditioner 200ml | Conditioner | 200ml bottle | 2\n\nSHAMPOO_TRAVEL_100 | Daily Clean Shampoo 100ml | Shampoo | 100ml bottle | 2\n\nSKINCREAM_HYDRATE_100 | Hydration Face Cream 100ml | Skincare | 100ml jar | 2\n\nrequested_qty must be a plain integer number of cases (or pallets if that’s what the email is clearly asking). Do not include text like \"cases\" or \"pallets\".\n\nrequested_ship_date must be exactly YYYY-MM-DD. If no date is in the email, return null.\n\nemail_subject must be exactly the subject of the email.\n\nemail_body must be the full email body text.\n\nIf any field is missing in the email, put null for that field.\n\nThe email to analyze is below.\n\nEmail subject:\n\"{{ $json.Subject }}\"\n\nEmail body:\n\"{{ $json.snippet }}\"\n\nReturn ONLY valid JSON.\nDo not add code fences, markdown, comments, or explanations."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -224,
+        464
+      ],
+      "id": "dcbaabbe-df83-471c-abcc-4972c596d8b1",
+      "name": "Extract Request",
+      "credentials": {
+        "openAiApi": {
+          "id": "F8bOLRkESIyOPR0P",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// \"Prepare Request Row\" Function node\n\n// Helper: local UUID v4 generator (no require)\nfunction uuidv4() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\n// Get all incoming items\nconst items = $input.all();\n\n// We'll build new output items here\nconst out = [];\n\nfor (const item of items) {\n\n  // -------------------------------------------------\n  // STEP 1. Extract / parse the OpenAI node result\n  //\n  // We try different shapes because n8n/OpenAI node can vary.\n  // Goal: end up with extractedObj = { dc_name, sku_id, requested_qty, requested_ship_date, email_subject, email_body }\n  // -------------------------------------------------\n\n  let extractedObj = null;\n\n  // Case 1: Already parsed object at root\n  if (\n    item.json.dc_name !== undefined ||\n    item.json.sku_id !== undefined ||\n    item.json.requested_qty !== undefined ||\n    item.json.requested_ship_date !== undefined ||\n    item.json.email_subject !== undefined ||\n    item.json.email_body !== undefined\n  ) {\n    extractedObj = {\n      dc_name: item.json.dc_name ?? null,\n      sku_id: item.json.sku_id ?? null,\n      requested_qty: item.json.requested_qty ?? null,\n      requested_ship_date: item.json.requested_ship_date ?? null,\n      email_subject: item.json.email_subject ?? null,\n      email_body: item.json.email_body ?? null,\n    };\n  } else {\n    // Case 2: We need to pull the assistant message.content (stringified JSON)\n    // Common n8n patterns:\n    //   item.json[0].message.content\n    //   item.json.message.content\n    //   item.json.content\n    let rawContent = null;\n\n    if (\n      item.json[0] &&\n      item.json[0].message &&\n      item.json[0].message.content\n    ) {\n      rawContent = item.json[0].message.content;\n    } else if (\n      item.json.message &&\n      item.json.message.content\n    ) {\n      rawContent = item.json.message.content;\n    } else if (item.json.content) {\n      rawContent = item.json.content;\n    }\n\n    if (typeof rawContent === 'string') {\n      // Clean code fences if model ever slips and adds ```json ... ```\n      const cleaned = rawContent\n        .replace(/```json/gi, '')\n        .replace(/```/g, '')\n        .trim();\n\n      extractedObj = JSON.parse(cleaned);\n    }\n  }\n\n  // Fallback if for some reason we still didn't get anything\n  if (!extractedObj) {\n    extractedObj = {\n      dc_name: null,\n      sku_id: null,\n      requested_qty: null,\n      requested_ship_date: null,\n      email_subject: null,\n      email_body: null,\n    };\n  }\n\n  // -------------------------------------------------\n  // STEP 2. Make sure email_subject / email_body exist\n  //\n  // In theory they're now inside extractedObj.\n  // But if not (edge case), fallback to item.json.email_subject/body\n  // -------------------------------------------------\n  const email_subject = extractedObj.email_subject ?? item.json.email_subject ?? null;\n  const email_body    = extractedObj.email_body ?? item.json.email_body ?? null;\n\n  // -------------------------------------------------\n  // STEP 3. Normalize qty and date\n  //\n  // requested_qty -> integer\n  // requested_ship_date -> trust model, or null\n  // -------------------------------------------------\n  let qtyClean = extractedObj.requested_qty;\n  if (typeof qtyClean === 'string') {\n    // remove commas, spaces, words like \"cases\", etc.\n    qtyClean = qtyClean.replace(/[^0-9]/g, '');\n    qtyClean = qtyClean ? parseInt(qtyClean, 10) : null;\n  }\n\n  const dateClean = extractedObj.requested_ship_date ?? null;\n\n  // -------------------------------------------------\n  // STEP 4. Generate request_id\n  // -------------------------------------------------\n  const request_id = uuidv4();\n\n  // -------------------------------------------------\n  // STEP 5. Push final normalized object\n  // -------------------------------------------------\n  out.push({\n    json: {\n      request_id,\n\n      dc_name: extractedObj.dc_name ?? null,\n      sku_id: extractedObj.sku_id ?? null,\n      requested_qty: qtyClean ?? null,\n      requested_ship_date: dateClean ?? null,\n\n      email_subject: email_subject,\n      email_raw_text: email_body,\n\n      status: 'NEW',\n    },\n  });\n}\n\n// Return one item per incoming item (usually 1 anyway)\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        208
+      ],
+      "id": "4df61216-406a-4a02-afe7-c6f34bfd7a85",
+      "name": "Prepare Request Row"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dc_requests",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request_id": "={{ $json.request_id }}",
+            "dc_name": "={{ $json.dc_name }}",
+            "sku_id": "={{ $json.sku_id }}",
+            "requested_qty": "={{ $json.requested_qty }}",
+            "requested_ship_date": "={{ $json.requested_ship_date }}",
+            "email_subject": "={{ $json.email_subject }}",
+            "email_raw_text": "={{ $json.email_raw_text }}",
+            "status": "={{ $json.status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "dc_name",
+              "displayName": "dc_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sku_id",
+              "displayName": "sku_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "requested_qty",
+              "displayName": "requested_qty",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "requested_ship_date",
+              "displayName": "requested_ship_date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_raw_text",
+              "displayName": "email_raw_text",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1104,
+        0
+      ],
+      "id": "129c04bb-377a-485f-9427-a07f2f980b7e",
+      "name": "Log Request",
+      "credentials": {
+        "postgres": {
+          "id": "1UaEfWUiCx292axX",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://13.53.168.233:8000/simulate_request",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"dc_name\": \"{{$json.dc_name}}\",\n  \"sku\": \"{{$json.sku_id}}\",\n  \"qty_requested\": {{$json.requested_qty ? Number($json.requested_qty) : null}},\n  \"requested_date\": \"{{$json.requested_ship_date}}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        240
+      ],
+      "id": "12be9c91-4a28-4c7e-a8f8-c4f033cddd38",
+      "name": "Simulate"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dc_request_scenarios",
+          "mode": "list",
+          "cachedResultName": "dc_request_scenarios"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "material_risk_flag": false,
+            "accepted": "={{ $json.accepted }}",
+            "promised_qty": "={{ $json.promised_qty }}",
+            "service_level_pct": "={{ $json.service_level_pct }}",
+            "overtime_hours_needed": "={{ $json.overtime_hours_needed }}",
+            "scenario_id": "={{ $json.scenario_id }}",
+            "promised_ship_date": "={{ $json.promised_ship_date }}",
+            "scenario_label": "={{ $json.scenario_label }}",
+            "planner_comment": "={{ $json.planner_comment }}",
+            "created_at": "={{ $json.created_at }}",
+            "request_id": "={{ $json.request_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "scenario_id",
+              "displayName": "scenario_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scenario_label",
+              "displayName": "scenario_label",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "promised_ship_date",
+              "displayName": "promised_ship_date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "promised_qty",
+              "displayName": "promised_qty",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "service_level_pct",
+              "displayName": "service_level_pct",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "overtime_hours_needed",
+              "displayName": "overtime_hours_needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "material_risk_flag",
+              "displayName": "material_risk_flag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "planner_comment",
+              "displayName": "planner_comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "accepted",
+              "displayName": "accepted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1104,
+        160
+      ],
+      "id": "40574ef5-334a-4007-a054-a0bfffae4ab4",
+      "name": "Log Scenario",
+      "credentials": {
+        "postgres": {
+          "id": "1UaEfWUiCx292axX",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dc_request_reply_drafts",
+          "mode": "list",
+          "cachedResultName": "dc_request_reply_drafts"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request_id": "={{ $json.request_id }}",
+            "status": "={{ $json.status }}",
+            "email_subject": "={{ $json.email_subject }}",
+            "email_body": "={{ $json.email_body }}",
+            "created_at": "={{ $json.created_at }}"
+          },
+          "matchingColumns": [
+            "request_id"
+          ],
+          "schema": [
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1104,
+        336
+      ],
+      "id": "237ee2af-ec35-4272-9cf6-c7f0ddaffb97",
+      "name": "Insert Draft Email",
+      "credentials": {
+        "postgres": {
+          "id": "1UaEfWUiCx292axX",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "consulting.salami@gmail.com",
+        "subject": "={{ $json.email_subject }}",
+        "message": "={{ $json.email_body_html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        448
+      ],
+      "id": "cec7f6e5-221a-4cbe-b7b8-1cc4be79f596",
+      "name": "Send a message",
+      "webhookId": "bde763ad-07d0-47cd-bdfd-4b309cac6087",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7RZLmLXsrYN6mBtA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.email_subject }}",
+        "message": "={{ $json.email_body_html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        624
+      ],
+      "id": "96ae9a4a-083a-4b5e-883b-45b9898a05b0",
+      "name": "Create a draft",
+      "webhookId": "8c2846a6-5e95-40e7-85fb-1874dfbc91a1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7RZLmLXsrYN6mBtA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "540fb969-687c-4a3e-9db2-6049dab3a4cf",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "full",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        512
+      ],
+      "id": "1c053bb2-8673-4baa-9d7f-6488d61d5572",
+      "name": "If scenarios"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "readStatus": "unread",
+          "sender": "consulting.salami@gmail.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        208
+      ],
+      "id": "2c3c1a59-25e1-4800-899d-7f2c2d6f0643",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7RZLmLXsrYN6mBtA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// \"Prepare Scenario Row\" Function node (single merged output)\n\n// Helper: UUID v4 generator\nfunction uuidv4() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\n// Extract first YYYY-MM-DD from text like \"by 2025-11-02 ...\"\nfunction extractDateFromText(text) {\n  if (typeof text !== 'string') return null;\n  const m = text.match(/\\b\\d{4}-\\d{2}-\\d{2}\\b/);\n  return m ? m[0] : null;\n}\n\n// ---------- STEP 1: grab all incoming items from BOTH branches ----------\nconst incoming = $input.all();\n\n// We'll store these once\nlet requestBlock = null;   // should contain request_id, requested_qty...\nlet simulateBlock = null;  // should contain explanation, capacity_allocation...\n\nfor (const it of incoming) {\n  const j = it.json || {};\n\n  // Heuristic: request item\n  // (it has request_id and sku_id etc.)\n  if (\n    j.request_id &&\n    j.sku_id &&\n    (j.requested_qty !== undefined && j.requested_qty !== null)\n  ) {\n    requestBlock = j;\n  }\n\n  // Heuristic: simulation item\n  // (it has explanation / capacity_allocation etc.)\n  if (\n    j.explanation ||\n    j.capacity_allocation ||\n    j.capacity_notes ||\n    j.material_notes\n  ) {\n    simulateBlock = j;\n  }\n}\n\n// Safety fallback: if n8n swapped order\nif (!requestBlock && incoming[0]?.json?.request_id) {\n  requestBlock = incoming[0].json;\n}\nif (!simulateBlock && incoming[1]?.json?.explanation) {\n  simulateBlock = incoming[1].json;\n}\nif (!requestBlock && incoming[1]?.json?.request_id) {\n  requestBlock = incoming[1].json;\n}\nif (!simulateBlock && incoming[0]?.json?.explanation) {\n  simulateBlock = incoming[0].json;\n}\n\n// ---------- STEP 2: build final clean row ----------\n\n// request_id must come from the original request (FK to dc_requests)\nconst true_request_id = requestBlock?.request_id || null;\n\n// planner_comment from simulation\nconst planner_comment =\n  (simulateBlock && simulateBlock.explanation)\n    ? simulateBlock.explanation\n    : \"Auto-generated scenario\";\n\n// promised_ship_date:\n// 1) look for structured fields\nlet promised_ship_date_val =\n  simulateBlock?.promised_ship_date ||\n  simulateBlock?.promise_date ||\n  simulateBlock?.promised_date ||\n  null;\n\n// 2) fallback: extract 1st YYYY-MM-DD mentioned in explanation\nif (!promised_ship_date_val) {\n  const extracted = extractDateFromText(planner_comment);\n  if (extracted) {\n    promised_ship_date_val = extracted;\n  }\n}\n\n// 3) final fallback: today\nif (!promised_ship_date_val) {\n  const now = new Date();\n  const yyyy = String(now.getFullYear());\n  const mm = String(now.getMonth() + 1).padStart(2, '0');\n  const dd = String(now.getDate()).padStart(2, '0');\n  promised_ship_date_val = `${yyyy}-${mm}-${dd}`;\n}\n\n// promised_qty:\n// prefer simulation allocated_cases; fallback to requested_qty\nlet promised_qty_val =\n  simulateBlock?.promised_qty ??\n  simulateBlock?.allocated_cases ??\n  requestBlock?.requested_qty ??\n  0;\n\nif (typeof promised_qty_val === 'string') {\n  promised_qty_val = promised_qty_val.replace(/[^0-9]/g, '');\n  promised_qty_val = promised_qty_val ? parseInt(promised_qty_val, 10) : 0;\n}\nif (\n  promised_qty_val === null ||\n  promised_qty_val === undefined ||\n  Number.isNaN(promised_qty_val)\n) {\n  promised_qty_val = 0;\n}\n\n// service_level_pct (default 100)\nlet service_level_pct_val =\n  simulateBlock?.service_level_pct ??\n  simulateBlock?.service_level ??\n  100;\nif (typeof service_level_pct_val === 'string') {\n  service_level_pct_val = service_level_pct_val.replace('%','');\n  service_level_pct_val = parseFloat(service_level_pct_val);\n}\nif (Number.isNaN(service_level_pct_val)) {\n  service_level_pct_val = 100;\n}\n\n// overtime_hours_needed (default 0)\nlet overtime_hours_needed_val =\n  simulateBlock?.overtime_hours_needed ??\n  simulateBlock?.overtime_hours ??\n  0;\nif (Number.isNaN(overtime_hours_needed_val)) {\n  overtime_hours_needed_val = 0;\n}\n\n// material_risk_flag (default false)\nconst material_risk_flag_val =\n  (typeof simulateBlock?.material_risk_flag === 'boolean')\n    ? simulateBlock.material_risk_flag\n    : (typeof simulateBlock?.material_risk === 'boolean')\n      ? simulateBlock.material_risk\n      : false;\n\n// Single label for now\nconst scenario_label_val = \"Scenario 1\";\n\n// accepted default\nconst accepted_val = false;\n\n// created_at now\nconst created_at_val = new Date().toISOString();\n\n// new UUID for scenario_id\nfunction uuidv4_inner() {\n  return uuidv4();\n}\nconst scenario_id_val = uuidv4_inner();\n\n// ---------- STEP 3: RETURN EXACTLY ONE ITEM ----------\nreturn [\n  {\n    json: {\n      scenario_id: scenario_id_val,\n      request_id: true_request_id,\n      scenario_label: scenario_label_val,\n      promised_ship_date: promised_ship_date_val,\n      promised_qty: promised_qty_val,\n      service_level_pct: service_level_pct_val,\n      overtime_hours_needed: overtime_hours_needed_val,\n      material_risk_flag: material_risk_flag_val,\n      planner_comment: planner_comment,\n      accepted: accepted_val,\n      created_at: created_at_val,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        160
+      ],
+      "id": "a40db0cd-ff8e-40aa-bedd-e35ee8300033",
+      "name": "Prepare Request Row1",
+      "executeOnce": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        656,
+        512
+      ],
+      "id": "bfb86e9d-af76-4267-b6ee-122ecee85cda",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// \"Prepare Reply Email\" Function node\n\nfunction toDate(d) {\n  if (!d) return null;\n  return new Date(d + \"T00:00:00Z\");\n}\n\nconst incoming = $input.all();\n\n// Detect request + scenario from mixed inputs (order-agnostic)\nlet req = null;\nlet scenario = null;\nfor (const it of incoming) {\n  const j = it.json || {};\n  if (j.request_id && j.sku_id && j.requested_qty !== undefined && j.requested_qty !== null) req = j;\n  if (j.scenario_id && j.promised_ship_date && j.promised_qty !== undefined) scenario = j;\n}\nif (!req && incoming[0]?.json?.request_id) req = incoming[0].json;\nif (!scenario && incoming[1]?.json?.scenario_id) scenario = incoming[1].json;\nif (!req && incoming[1]?.json?.request_id) req = incoming[1].json;\nif (!scenario && incoming[0]?.json?.scenario_id) scenario = incoming[0].json;\n\n// Fallback defaults\nif (!req) {\n  req = {\n    request_id: null,\n    dc_name: \"DC\",\n    sku_id: \"SKU\",\n    requested_qty: 0,\n    requested_ship_date: null,\n    email_subject: \"Request\",\n    email_raw_text: \"\",\n  };\n}\nif (!scenario) {\n  scenario = {\n    scenario_id: null,\n    promised_ship_date: req.requested_ship_date,\n    promised_qty: req.requested_qty,\n    planner_comment: \"No simulation scenario found.\",\n  };\n}\n\n// Pull status directly from inputs (pass-through)\nconst inputStatus =\n  (incoming.find(it => it?.json?.status !== undefined)?.json?.status) ??\n  (req.status ?? \"\");\n\n// Determine template (but do NOT change the status value itself)\nconst statusLower = String(inputStatus).toLowerCase();\nconst can_fulfill = statusLower === \"full\";\n\n// Numbers & dates\nconst requested_qty_num = Number(req.requested_qty || 0);\nconst promised_qty_num  = Number(scenario.promised_qty || 0);\nconst reqDate  = toDate(req.requested_ship_date);\nconst promDate = toDate(scenario.promised_ship_date);\n\n// Subject + spaced body (plaintext first)\nlet final_subject = \"\";\nlet final_body = \"\";\n\nif (can_fulfill) {\n  final_subject = `RE: ${req.email_subject || \"Capacity Confirmation\"}`;\n\n  final_body = [\n    `Hi ${req.dc_name || \"team\"},`,\n    ``,\n    `We can support your request of ${requested_qty_num} cases of ${req.sku_id}.`,\n    ``,\n    `Earliest ship date we can commit: ${scenario.promised_ship_date}.`,\n    `Confirmed available quantity: ${promised_qty_num} cases.`,\n    ``,\n    `${(scenario.planner_comment || \"\").trim()}`,\n    ``,\n    `Please confirm so we can schedule shipment.`,\n    ``,\n    `Best regards,`,\n    `Planning Team`,\n  ].filter(Boolean).join(\"\\n\");\n} else {\n  final_subject = `RE: ${req.email_subject || \"Capacity Update / Alternative\"}`;\n\n  final_body = [\n    `Hi ${req.dc_name || \"team\"},`,\n    ``,\n    `We reviewed your request of ${requested_qty_num} cases of ${req.sku_id} by ${req.requested_ship_date}.`,\n    ``,\n    `Here's what we can offer:`,\n    `- Available quantity: ${promised_qty_num} cases`,\n    `- Earliest ship date: ${scenario.promised_ship_date}`,\n    ``,\n    `Notes from planning:`,\n    `${(scenario.planner_comment || \"\").trim()}`,\n    ``,\n    `If this works for you, please confirm and we'll lock it in.`,\n    `If not, we'll escalate to the planner for adjustment.`,\n    ``,\n    `Best regards,`,\n    `Planning Team`,\n  ].filter(Boolean).join(\"\\n\");\n}\n\n// Normalize plaintext spacing\nconst body_text = final_body\n  .replace(/\\r\\n/g, \"\\n\")\n  .replace(/\\n{3,}/g, \"\\n\\n\")\n  .trim();\n\n// Build HTML with paragraph breaks\nconst email_body_html = body_text\n  .split(/\\n{2,}/)                 // split paragraphs by blank line\n  .map(p => `<p>${p.replace(/\\n/g, '<br>')}</p>`)\n  .join('\\n');\n\nconst created_at_iso = new Date().toISOString();\n\nreturn [\n  {\n    json: {\n      request_id: req.request_id || null,\n      status: inputStatus,                 // pass-through\n      email_subject: final_subject,\n      email_body: body_text,               // plaintext version\n      email_body_html: email_body_html,    // HTML version (use this in Gmail node)\n      created_at: created_at_iso,\n      scenario_id: scenario.scenario_id || null,\n      promised_ship_date: scenario.promised_ship_date || null,\n      promised_qty: scenario.promised_qty || null,\n      can_fulfill: can_fulfill,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        416
+      ],
+      "id": "ed16409f-703c-454f-826f-abaac7ca8ad9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        656,
+        176
+      ],
+      "id": "92c4e1d4-26cc-4834-8eac-c4fe39aadf4a",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        208
+      ],
+      "id": "7df1d416-a1ac-43e2-ae87-b2deed89e000",
+      "name": "Mark a message as read",
+      "webhookId": "b0c0b49b-453a-40a3-a788-c4a1e142ae25",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7RZLmLXsrYN6mBtA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n# 💡 Agent always on Duty \n\n\n![n8n Logo Diagram](https://i.ibb.co/tMvCqZSX/Chat-GPT-Image-Nov-11-2025-12-36-41-PM.png \"Diagram of the workflow stages\")\n\n",
+        "height": 1216,
+        "width": 672,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1216,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "439d59bd-e94a-413a-87e7-9598afd2cc93",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract Request": {
+      "main": [
+        [
+          {
+            "node": "Prepare Request Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Request Row": {
+      "main": [
+        [
+          {
+            "node": "Log Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Simulate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simulate": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark a message as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Request Row1": {
+      "main": [
+        [
+          {
+            "node": "Log Scenario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If scenarios": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Insert Draft Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If scenarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Request Row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Request": {
+      "main": [
+        []
+      ]
+    },
+    "Mark a message as read": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "08f625a8-fa66-4bf1-add9-e694c6861775",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04a06d85b41a5685ed5864213d6713b7a844d0cbf6875b921cc49065140b1f41"
+  },
+  "id": "tQpXeDfOkKlEPJmb",
+  "tags": []
+}
