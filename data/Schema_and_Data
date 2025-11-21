@@ -1,0 +1,217 @@
+#  Production Planning Database Schema and Data
+
+This document contains the core data tables (structure and seeded rows) required for production scheduling and material planning.
+
+---
+
+## 1. PRODUCTS
+*Defines all finished goods (SKUs).*
+
+| Column Name | Description |
+| :--- | :--- |
+| **product_id** | SKU Identifier (Primary Key) |
+| **product_name** | Full product description |
+| **category** | Product family (e.g., Shampoo, Skincare) |
+| **pack_size** | Retail unit volume |
+| **priority** | 1 (Most Critical) to 2 (Standard) |
+
+### Data Rows
+| product_id | product_name | category | pack_size | priority |
+| :--- | :--- | :--- | :--- | :--- |
+| SHAMPOO\_CITRUS\_200 | Citrus Shampoo 200ml | Shampoo | 200ml bottle | **1** |
+| CONDITIONER\_HYDRATE\_200 | Hydrating Conditioner 200ml | Conditioner | 200ml bottle | 2 |
+| SHAMPOO\_TRAVEL\_100 | Daily Clean Shampoo 100ml | Shampoo | 100ml bottle | 2 |
+| SKINCREAM\_HYDRATE\_100 | Hydration Face Cream 100ml | Skincare | 100ml jar | 2 |
+
+---
+
+## 2. LINES
+*Defines the physical production assets.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **line_id** | Production Line Identifier (Primary Key) |
+| **line_name** | Descriptive name |
+| **daily_capacity\_cases** | Max finished cases per day |
+
+### Data Rows
+| line_id | line_name | daily\_capacity\_cases |
+| :--- | :--- | :--- |
+| LINE\_1 | Line 1 - High Speed Filler | **12000** |
+| LINE\_2 | Line 2 - Versatile Filler/Labeler | **10000** |
+| LINE\_3 | Line 3 - Multipurpose Line | **8000** |
+
+---
+
+## 3. LINE\_CAPABILITY
+*Defines the rate (speed) at which each line can produce each SKU.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **line_id** | Reference to LINES |
+| **product_id** | Reference to PRODUCTS |
+| **rate\_cases\_per\_hour** | Output rate in cases per hour |
+
+### Data Rows
+| line_id | product_id | rate\_cases\_per\_hour |
+| :--- | :--- | :--- |
+| LINE\_1 | SHAMPOO\_CITRUS\_200 | **1500** |
+| LINE\_2 | SHAMPOO\_CITRUS\_200 | 1200 |
+| LINE\_3 | SHAMPOO\_CITRUS\_200 | 800 |
+| LINE\_1 | CONDITIONER\_HYDRATE\_200 | 1400 |
+| LINE\_2 | CONDITIONER\_HYDRATE\_200 | 1100 |
+| LINE\_3 | CONDITIONER\_HYDRATE\_200 | 750 |
+| LINE\_1 | SHAMPOO\_TRAVEL\_100 | 1300 |
+| LINE\_2 | SHAMPOO\_TRAVEL\_100 | 1000 |
+| LINE\_3 | SHAMPOO\_TRAVEL\_100 | 700 |
+| LINE\_1 | SKINCREAM\_HYDRATE\_100 | 900 |
+| LINE\_2 | SKINCREAM\_HYDRATE\_100 | 800 |
+| LINE\_3 | SKINCREAM\_HYDRATE\_100 | 600 |
+
+---
+
+## 4. MATERIALS
+*Defines all raw materials and packaging components.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **material_id** | Component Identifier (Primary Key) |
+| **material_name** | Descriptive component name |
+| **uom** | Unit of Measure (e.g., kg, bottles, jars) |
+| **supplier\_lead\_time\_days** | Time to receive a new order |
+
+### Data Rows
+| material_id | material_name | uom | supplier\_lead\_time\_days |
+| :--- | :--- | :--- | :--- |
+| BASE\_SHAMPOO | Shampoo Base Bulk | kg | 5 |
+| BASE\_CONDITIONER | Conditioner Base Bulk | kg | 5 |
+| BASE\_SKINCREAM | Face Cream Bulk | kg | **10** |
+| FRAGRANCE\_CITRUS | Citrus Fragrance | kg | **14** |
+| BOTTLE\_200ML\_CLEAR | 200ml Clear Bottle | bottles | 7 |
+| BOTTLE\_100ML\_CLEAR | 100ml Clear Bottle | bottles | 7 |
+| JAR\_100ML\_FROST | 100ml Frosted Jar | jars | **10** |
+| PUMP\_200ML\_WHITE | 200ml Pump/Cap White | pumps | 7 |
+| CAP\_JAR\_100ML | 100ml Jar Lid | lids | 7 |
+| LABEL\_200ML | Front/Back Label 200ml | labels | 7 |
+| LABEL\_100ML | Front/Back Label 100ml | labels | 7 |
+| CARTON\_100ML | Unit Carton 100ml | cartons | 4 |
+
+---
+
+## 5. BILL\_OF\_MATERIALS (BOM)
+*Defines the material consumption rate (qty per case) for each product.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **product_id** | Reference to PRODUCTS |
+| **material_id** | Reference to MATERIALS |
+| **qty\_per\_case** | Quantity of material consumed per 1 case of finished product |
+
+### Data Rows (Grouped by Product)
+
+**SHAMPOO\_CITRUS\_200**
+* BASE\_SHAMPOO: **8.0**
+* FRAGRANCE\_CITRUS: **0.15**
+* BOTTLE\_200ML\_CLEAR: **12.0**
+* PUMP\_200ML\_WHITE: **12.0**
+* LABEL\_200ML: **24.0**
+
+**CONDITIONER\_HYDRATE\_200**
+* BASE\_CONDITIONER: **8.0**
+* FRAGRANCE\_CITRUS: **0.10**
+* BOTTLE\_200ML\_CLEAR: **12.0**
+* PUMP\_200ML\_WHITE: **12.0**
+* LABEL\_200ML: **24.0**
+
+**SHAMPOO\_TRAVEL\_100**
+* BASE\_SHAMPOO: **9.0**
+* FRAGRANCE\_CITRUS: **0.20**
+* BOTTLE\_100ML\_CLEAR: **24.0**
+* LABEL\_100ML: **48.0**
+
+**SKINCREAM\_HYDRATE\_100**
+* BASE\_SKINCREAM: **6.0**
+* FRAGRANCE\_CITRUS: **0.05**
+* JAR\_100ML\_FROST: **24.0**
+* CAP\_JAR\_100ML: **24.0**
+* LABEL\_100ML: **24.0**
+* CARTON\_100ML: **24.0**
+
+---
+
+## 6. INVENTORY\_MATERIALS
+*Defines the current stock of all components.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **material_id** | Reference to MATERIALS |
+| **on\_hand\_qty** | Physical quantity in stock (same UOM as material) |
+
+### Data Rows
+| material_id | on\_hand\_qty | UOM |
+| :--- | :--- | :--- |
+| BASE\_SHAMPOO | 5000.0 | kg |
+| BASE\_CONDITIONER | 2500.0 | kg |
+| BASE\_SKINCREAM | 1200.0 | kg |
+| FRAGRANCE\_CITRUS | **200.0** | kg |
+| BOTTLE\_200ML\_CLEAR | **70000.0** | bottles |
+| BOTTLE\_100ML\_CLEAR | 60000.0 | bottles |
+| JAR\_100ML\_FROST | 30000.0 | jars |
+| PUMP\_200ML\_WHITE | 70000.0 | pumps |
+| CAP\_JAR\_100ML | 30000.0 | lids |
+| LABEL\_200ML | 140000.0 | labels |
+| LABEL\_100ML | 120000.0 | labels |
+| CARTON\_100ML | 60000.0 | cartons |
+
+---
+
+## 7. SCHEDULE
+*The existing production plan for the week: 2025-10-27 to 2025-10-31.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **sched_id** | Unique Schedule ID |
+| **line_id** | Reference to LINES |
+| **production\_date** | Planned date of production |
+| **product_id** | Reference to PRODUCTS |
+| **planned\_qty\_cases** | Quantity to be produced |
+| **is\_firm** | TRUE (Locked/Promised) / FALSE (Can be bumped) |
+
+### Data Rows
+| line_id | production\_date | product_id | planned\_qty\_cases | is\_firm |
+| :--- | :--- | :--- | :--- | :--- |
+| **LINE\_1** | 2025-10-27 | SHAMPOO\_CITRUS\_200 | 8000 | **TRUE** |
+| LINE\_1 | 2025-10-28 | SHAMPOO\_CITRUS\_200 | 7500 | **TRUE** |
+| LINE\_1 | 2025-10-29 | CONDITIONER\_HYDRATE\_200 | 4000 | **FALSE** |
+| LINE\_1 | 2025-10-30 | SHAMPOO\_CITRUS\_200 | 6000 | **TRUE** |
+| LINE\_1 | 2025-10-31 | SHAMPOO\_CITRUS\_200 | 4000 | **FALSE** |
+| **LINE\_2** | 2025-10-27 | SKINCREAM\_HYDRATE\_100 | 3000 | **TRUE** |
+| LINE\_2 | 2025-10-28 | SKINCREAM\_HYDRATE\_100 | 3200 | **TRUE** |
+| LINE\_2 | 2025-10-29 | SKINCREAM\_HYDRATE\_100 | 3500 | **TRUE** |
+| LINE\_2 | 2025-10-30 | CONDITIONER\_HYDRATE\_200 | 2500 | **FALSE** |
+| LINE\_2 | 2025-10-31 | CONDITIONER\_HYDRATE\_200 | 2000 | **FALSE** |
+| **LINE\_3** | 2025-10-27 | SHAMPOO\_TRAVEL\_100 | 3000 | **TRUE** |
+| LINE\_3 | 2025-10-28 | SHAMPOO\_TRAVEL\_100 | 3200 | **TRUE** |
+| LINE\_3 | 2025-10-29 | SHAMPOO\_TRAVEL\_100 | 3000 | **TRUE** |
+| LINE\_3 | 2025-10-30 | SHAMPOO\_TRAVEL\_100 | 2000 | **FALSE** |
+| LINE\_3 | 2025-10-31 | SHAMPOO\_TRAVEL\_100 | 1500 | **FALSE** |
+
+---
+
+## 8. DC\_REQUESTS
+*Defines the urgent request that needs planning/action.*
+
+| Column Name | Description |
+| :--- | :--- |
+| **request_id** | Unique Request ID |
+| **dc_id** | Distribution Center ID |
+| **product_id** | Product requested |
+| **requested\_qty\_cases** | Quantity requested |
+| **requested\_due\_date** | Deadline for the request |
+| **promo\_reason** | Context for the request |
+| **status** | Current state of the request |
+
+### Data Rows
+| dc_id | request\_datetime | product_id | requested\_qty\_cases | requested\_due\_date | promo\_reason | status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| DC\_EAST | 2025-10-24 09:15:00 | **SHAMPOO\_CITRUS\_200** | **18000 cases** | due **2025-10-30** | "Buy-2-Get-1 Weekend Promo" | **PENDING** |
