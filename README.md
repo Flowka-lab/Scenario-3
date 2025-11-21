@@ -131,17 +131,14 @@ LICENSE                     # MIT License
 
 You can help by:
 
-### ✔ Testing the demo  
-Follow the Quickstart. If you find issues, open a GitHub issue with details.
-
-### ✔ Improving documentation  
-If instructions are unclear, feel free to refine them.
-
-### ✔ Extending functionality  
-Try new request types, integrate different models, or add simulation logic.
-
-### ✔ Reporting issues  
-Use the issue tracker for bugs, parsing failures, or feature suggestions.
+###  Testing the demo  
+- Follow the Quickstart. If you find issues, open a GitHub issue with details.
+###  Improving documentation  
+- If instructions are unclear, feel free to refine them.
+###  Extending functionality  
+- Try new request types, integrate different models, or add simulation logic.
+###  Reporting issues  
+- Use the issue tracker for bugs, parsing failures, or feature suggestions.
 
 Please follow standard best practices:
 - Clear commit messages  
