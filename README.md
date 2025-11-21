@@ -150,6 +150,10 @@ Please follow standard best practices:
 
 ---
 
+## detailed guide - step by step
+
+[Getting Started Guide](get_started.md)
+
 ##  License & Credits
 
 This project is released under the **MIT License**.
