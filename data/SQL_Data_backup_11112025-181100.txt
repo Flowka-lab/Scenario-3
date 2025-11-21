@@ -1,0 +1,653 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict LfjalkVuSap3t1bP7mXBnYJrgqPaBmo9nxRG5GM4IwSG46yEh6nqQfZSa0dP8Br
+
+-- Dumped from database version 17.4
+-- Dumped by pg_dump version 18.0
+
+-- Started on 2025-11-11 18:04:26
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 4374 (class 0 OID 16540)
+-- Dependencies: 224
+-- Data for Name: materials; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.materials VALUES ('BASE_SHAMPOO', 'Shampoo Base Bulk', 'kg', 5);
+INSERT INTO public.materials VALUES ('BASE_CONDITIONER', 'Conditioner Base Bulk', 'kg', 5);
+INSERT INTO public.materials VALUES ('BASE_SKINCREAM', 'Face Cream Bulk', 'kg', 10);
+INSERT INTO public.materials VALUES ('FRAGRANCE_CITRUS', 'Citrus Fragrance', 'kg', 14);
+INSERT INTO public.materials VALUES ('BOTTLE_200ML_CLEAR', '200ml Clear Bottle', 'bottles', 7);
+INSERT INTO public.materials VALUES ('BOTTLE_100ML_CLEAR', '100ml Clear Bottle', 'bottles', 7);
+INSERT INTO public.materials VALUES ('JAR_100ML_FROST', '100ml Frosted Jar', 'jars', 10);
+INSERT INTO public.materials VALUES ('PUMP_200ML_WHITE', '200ml Pump/Cap White', 'pumps', 7);
+INSERT INTO public.materials VALUES ('CAP_JAR_100ML', '100ml Jar Lid', 'lids', 7);
+INSERT INTO public.materials VALUES ('LABEL_200ML', 'Front/Back Label 200ml', 'labels', 7);
+INSERT INTO public.materials VALUES ('LABEL_100ML', 'Front/Back Label 100ml', 'labels', 7);
+INSERT INTO public.materials VALUES ('CARTON_100ML', 'Unit Carton 100ml', 'cartons', 4);
+
+
+--
+-- TOC entry 4369 (class 0 OID 16488)
+-- Dependencies: 219
+-- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.products VALUES ('SHAMPOO_CITRUS_200', 'Citrus Shampoo 200ml', 'Shampoo', '200ml bottle', 1);
+INSERT INTO public.products VALUES ('CONDITIONER_HYDRATE_200', 'Hydrating Conditioner 200ml', 'Conditioner', '200ml bottle', 2);
+INSERT INTO public.products VALUES ('SHAMPOO_TRAVEL_100', 'Daily Clean Shampoo 100ml', 'Shampoo', '100ml bottle', 2);
+INSERT INTO public.products VALUES ('SKINCREAM_HYDRATE_100', 'Hydration Face Cream 100ml', 'Skincare', '100ml jar', 2);
+
+
+--
+-- TOC entry 4375 (class 0 OID 16547)
+-- Dependencies: 225
+-- Data for Name: bill_of_materials; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_CITRUS_200', 'BASE_SHAMPOO', 8);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_CITRUS_200', 'FRAGRANCE_CITRUS', 0.15);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_CITRUS_200', 'BOTTLE_200ML_CLEAR', 12);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_CITRUS_200', 'PUMP_200ML_WHITE', 12);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_CITRUS_200', 'LABEL_200ML', 24);
+INSERT INTO public.bill_of_materials VALUES ('CONDITIONER_HYDRATE_200', 'BASE_CONDITIONER', 8);
+INSERT INTO public.bill_of_materials VALUES ('CONDITIONER_HYDRATE_200', 'FRAGRANCE_CITRUS', 0.1);
+INSERT INTO public.bill_of_materials VALUES ('CONDITIONER_HYDRATE_200', 'BOTTLE_200ML_CLEAR', 12);
+INSERT INTO public.bill_of_materials VALUES ('CONDITIONER_HYDRATE_200', 'PUMP_200ML_WHITE', 12);
+INSERT INTO public.bill_of_materials VALUES ('CONDITIONER_HYDRATE_200', 'LABEL_200ML', 24);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_TRAVEL_100', 'BASE_SHAMPOO', 9);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_TRAVEL_100', 'FRAGRANCE_CITRUS', 0.2);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_TRAVEL_100', 'BOTTLE_100ML_CLEAR', 24);
+INSERT INTO public.bill_of_materials VALUES ('SHAMPOO_TRAVEL_100', 'LABEL_100ML', 48);
+INSERT INTO public.bill_of_materials VALUES ('SKINCREAM_HYDRATE_100', 'BASE_SKINCREAM', 6);
+INSERT INTO public.bill_of_materials VALUES ('SKINCREAM_HYDRATE_100', 'FRAGRANCE_CITRUS', 0.05);
+INSERT INTO public.bill_of_materials VALUES ('SKINCREAM_HYDRATE_100', 'JAR_100ML_FROST', 24);
+INSERT INTO public.bill_of_materials VALUES ('SKINCREAM_HYDRATE_100', 'CAP_JAR_100ML', 24);
+INSERT INTO public.bill_of_materials VALUES ('SKINCREAM_HYDRATE_100', 'LABEL_100ML', 24);
+INSERT INTO public.bill_of_materials VALUES ('SKINCREAM_HYDRATE_100', 'CARTON_100ML', 24);
+
+
+--
+-- TOC entry 4379 (class 0 OID 16635)
+-- Dependencies: 229
+-- Data for Name: dc_request_reply_drafts; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.dc_request_reply_drafts VALUES ('6e157eaa-ddea-4369-92a4-35347df92575', 'sent', 'RE: URGENT Promo Support - Need 12k cases Citrus Shampoo', 'Hi DC North France,
+
+We can support your request of 12000 cases of SHAMPOO_CITRUS_200.
+
+Earliest ship date we can commit: 2025-11-02.
+Confirmed available quantity: 12000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-10-29 16:01:05.443');
+INSERT INTO public.dc_request_reply_drafts VALUES ('f8452da1-6ab0-4ae6-9a2c-fb22c34c6978', 'sent', 'RE: Request for 20k Hydrating Conditioner for South campaign', 'Hi South DC,
+
+We can support your request of 20000 cases of CONDITIONER_HYDRATE_200.
+
+Earliest ship date we can commit: 2025-11-07.
+Confirmed available quantity: 20000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 09:56:58.465');
+INSERT INTO public.dc_request_reply_drafts VALUES ('b4fecbae-a485-45e9-b189-5d067594b239', 'sent', 'RE: Request for 20k Hydrating Conditioner for South campaign', 'Hi South DC,
+
+We can support your request of 2000000 cases of CONDITIONER_HYDRATE_200.
+
+Earliest ship date we can commit: 2025-11-07.
+Confirmed available quantity: 2000000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 09:57:34.934');
+INSERT INTO public.dc_request_reply_drafts VALUES ('b437480d-4b4c-4439-a405-23ab98c1e5ea', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 15000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-03.
+Confirmed available quantity: 15000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 09:58:17.628');
+INSERT INTO public.dc_request_reply_drafts VALUES ('287d524a-181b-4a8f-9e33-97f85c40f737', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 15000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 15000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 09:59:09.86');
+INSERT INTO public.dc_request_reply_drafts VALUES ('6a0c4021-5487-447a-bffa-328ce4f86987', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 900000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 900000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 09:59:45.514');
+INSERT INTO public.dc_request_reply_drafts VALUES ('79cf1609-c3c7-4e65-b075-dd186058f5df', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 15000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 15000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 10:00:56.163');
+INSERT INTO public.dc_request_reply_drafts VALUES ('307cb0ce-62d2-4671-86a2-cf09adb6e988', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 9000000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 9000000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 10:02:18.36');
+INSERT INTO public.dc_request_reply_drafts VALUES ('dad4d92b-93e5-454d-8c9a-791164f69db4', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 1000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 1000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 10:02:47.87');
+INSERT INTO public.dc_request_reply_drafts VALUES ('f88d99af-d99a-403c-9dd2-e7919edd301b', 'sent', 'RE: Need 8k Hydration Face Cream before 2025-11-08', 'Hi DC West France,
+
+We can support your request of 8000 cases of SKINCREAM_HYDRATE_100.
+
+Earliest ship date we can commit: 2025-11-08.
+Confirmed available quantity: 8000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 10:16:24.896');
+INSERT INTO public.dc_request_reply_drafts VALUES ('aad731c2-4f3d-4635-98a1-cf61c8497d8a', 'draft', 'RE: Need 8k Hydration Face Cream before 2025-11-08', 'Hi DC West France,
+
+We reviewed your request of 8000 cases of SKINCREAM_HYDRATE_100 by 2025-11-08.
+
+Here''s what we can offer:
+- Available quantity: 8000 cases
+- Earliest ship date: 2025-11-08
+
+Notes from planning:
+No simulation scenario found.
+
+If this works for you, please confirm and we''ll lock it in.
+If not, we''ll escalate to the planner for adjustment.
+
+Best regards,
+Planning Team', '2025-11-03 10:24:26.6');
+INSERT INTO public.dc_request_reply_drafts VALUES ('1471245c-08d8-4217-a56c-c9da1bc9d135', 'draft', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We reviewed your request of 15000 cases of SHAMPOO_TRAVEL_100 by 2025-11-03.
+
+Here''s what we can offer:
+- Available quantity: 15000 cases
+- Earliest ship date: 2025-11-03
+
+Notes from planning:
+No simulation scenario found.
+
+If this works for you, please confirm and we''ll lock it in.
+If not, we''ll escalate to the planner for adjustment.
+
+Best regards,
+Planning Team', '2025-11-03 10:31:18.783');
+INSERT INTO public.dc_request_reply_drafts VALUES ('18beed8c-4017-41cb-96ec-e01313154eff', 'draft', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We reviewed your request of 15000 cases of SHAMPOO_TRAVEL_100 by 2025-11-03.
+
+Here''s what we can offer:
+- Available quantity: 15000 cases
+- Earliest ship date: 2025-11-03
+
+Notes from planning:
+No simulation scenario found.
+
+If this works for you, please confirm and we''ll lock it in.
+If not, we''ll escalate to the planner for adjustment.
+
+Best regards,
+Planning Team', '2025-11-03 10:33:38.372');
+INSERT INTO public.dc_request_reply_drafts VALUES ('01924c64-9dc9-45f3-a097-c5f7ada687ba', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 15000 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-03.
+Confirmed available quantity: 15000 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 10:51:15.477');
+INSERT INTO public.dc_request_reply_drafts VALUES ('41215643-45ff-4778-982f-7d42cf3cbbec', 'draft', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We reviewed your request of 1500000 cases of SHAMPOO_TRAVEL_100 by 2025-11-03.
+
+Here''s what we can offer:
+- Available quantity: 1500000 cases
+- Earliest ship date: 2025-11-03
+
+Notes from planning:
+No simulation scenario found.
+
+If this works for you, please confirm and we''ll lock it in.
+If not, we''ll escalate to the planner for adjustment.
+
+Best regards,
+Planning Team', '2025-11-03 10:51:29.217');
+INSERT INTO public.dc_request_reply_drafts VALUES ('164a3d6b-0335-4740-bb39-8b33ca1b0b76', 'sent', 'RE: Promo Request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+
+We can support your request of 150 cases of SHAMPOO_TRAVEL_100.
+
+Earliest ship date we can commit: 2025-11-03.
+Confirmed available quantity: 150 cases.
+
+No simulation scenario found.
+
+Please confirm so we can schedule shipment.
+
+Best regards,
+Planning Team', '2025-11-03 10:51:48.157');
+INSERT INTO public.dc_request_reply_drafts VALUES ('8571ef3b-355f-45f7-a41e-060ce4cf3f1f', 'full', 'RE: another request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+We can support your request of 9000 cases of SHAMPOO_TRAVEL_100.
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 9000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-03 11:37:46.443');
+INSERT INTO public.dc_request_reply_drafts VALUES ('58058dfc-8aad-4160-a9b5-7b19424b9fe8', 'full', 'RE: another request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+We can support your request of 9000 cases of SHAMPOO_TRAVEL_100.
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 9000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-03 11:42:22.252');
+INSERT INTO public.dc_request_reply_drafts VALUES ('f1e22ac3-4603-4e10-a15e-d77dfc119a44', 'full', 'RE: another request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+We can support your request of 1000 cases of SHAMPOO_TRAVEL_100.
+Earliest ship date we can commit: 2025-11-01.
+Confirmed available quantity: 1000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-03 11:50:59.558');
+INSERT INTO public.dc_request_reply_drafts VALUES ('d965b280-6e39-4816-991b-edb5d6c2c690', 'partial', 'RE: another request - 15k Daily Clean Shampoo', 'Hi DC Central France,
+We reviewed your request of 1000000 cases of SHAMPOO_TRAVEL_100 by 2025-11-01.
+Here''s what we can offer:
+- Available quantity: 1000000 cases
+- Earliest ship date: 2025-11-01
+Notes from planning:
+No simulation scenario found.
+If this works for you, please confirm and we''ll lock it in.
+If not, we''ll escalate to the planner for adjustment.
+Best regards,
+Planning Team', '2025-11-03 11:51:19.633');
+INSERT INTO public.dc_request_reply_drafts VALUES ('ce435b52-a686-4f90-9b0d-ef2f8cd0de59', 'full', 'RE: Request for 20k Hydrating Conditioner for South campaign', 'Hi South DC,
+We can support your request of 20000 cases of CONDITIONER_HYDRATE_200.
+Earliest ship date we can commit: 2025-11-07.
+Confirmed available quantity: 20000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-03 11:56:13.005');
+INSERT INTO public.dc_request_reply_drafts VALUES ('e94dc0b3-fbae-49ce-9718-9dd4f7be3df9', 'full', 'RE: urgent request - can you help us please', 'Hi South DC,
+We can support your request of 20000 cases of CONDITIONER_HYDRATE_200.
+Earliest ship date we can commit: 2025-11-07.
+Confirmed available quantity: 20000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-03 12:01:11.904');
+INSERT INTO public.dc_request_reply_drafts VALUES ('249c7680-3b61-43fc-a305-60f953f404ba', 'full', 'RE: Urgent Request - 10k Citrus Shampoo for Black Friday', 'Hi DC East,
+We can support your request of 10000 cases of SHAMPOO_CITRUS_200.
+Earliest ship date we can commit: 2025-11-06.
+Confirmed available quantity: 10000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-03 12:04:12.2');
+INSERT INTO public.dc_request_reply_drafts VALUES ('822398c6-cba5-40f2-985e-be2ac7fc015e', 'full', 'RE: urgent request - can you help us please', 'Hi South DC,
+We can support your request of 20000 cases of CONDITIONER_HYDRATE_200.
+Earliest ship date we can commit: 2025-11-07.
+Confirmed available quantity: 20000 cases.
+No simulation scenario found.
+Please confirm so we can schedule shipment.
+Best regards,
+Planning Team', '2025-11-06 17:06:02.3');
+
+
+--
+-- TOC entry 4377 (class 0 OID 16597)
+-- Dependencies: 227
+-- Data for Name: dc_requests; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.dc_requests VALUES ('0aa12f32-46a7-469b-87a2-5daa1b06f621', 'DC North France', 'SHAMPOO_CITRUS_200', 12000.00, '2025-11-02', 'Hi Plant Team,  We have an urgent promotion in the North region. We need 12,000 cases of SHAMPOO_CITRUS_200 to ship no later than 2025-11-02. Can you confirm availability / earliest ship date?  Thanks, DC North France', 'URGENT Promo Support - Need 12k cases Citrus Shampoo', 'NEW', '2025-10-28 16:31:48.274844');
+INSERT INTO public.dc_requests VALUES ('6e157eaa-ddea-4369-92a4-35347df92575', 'DC North France', 'SHAMPOO_CITRUS_200', 12000.00, '2025-11-02', 'Hi Plant Team,  We have an urgent promotion in the North region. We need 12,000 cases of SHAMPOO_CITRUS_200 to ship no later than 2025-11-02. Can you confirm availability / earliest ship date?  Thanks, DC North France', 'URGENT Promo Support - Need 12k cases Citrus Shampoo', 'NEW', '2025-10-29 14:00:59.03295');
+INSERT INTO public.dc_requests VALUES ('679265a6-137a-40cb-b20d-4787e4052b15', 'DC South France', 'CONDITIONER_HYDRATE_200', 8000.00, '2025-11-05', 'Hello Planning Team,   Could you please plan an additional 8,000 cases of CONDITIONER_HYDRATE_200 for the upcoming campaign starting 2025-11-03?   Preferred ship date: 2025-11-05.   Regards,   DC South France', 'Promotion Support - Request 8k Hydrating Conditioner 200ml', 'NEW', '2025-10-29 16:23:58.283588');
+INSERT INTO public.dc_requests VALUES ('6b0c613b-e7fa-4590-8cfb-9c26383d603e', 'DC South France', 'CONDITIONER_HYDRATE_200', 8000.00, '2025-11-05', 'Hello Planning Team,   Could you please plan an additional 8,000 cases of CONDITIONER_HYDRATE_200 for the upcoming campaign starting 2025-11-03?   Preferred ship date: 2025-11-05.   Regards,   DC South France', 'Promotion Support - Request 8k Hydrating Conditioner 200ml', 'NEW', '2025-10-31 14:36:40.69135');
+INSERT INTO public.dc_requests VALUES ('5282ace0-73fa-46c4-b53b-65e944016c92', 'DC South France', 'CONDITIONER_HYDRATE_200', 8000.00, '2025-11-05', 'Hello Planning Team,   Could you please plan an additional 8,000 cases of CONDITIONER_HYDRATE_200 for the upcoming campaign starting 2025-11-03?   Preferred ship date: 2025-11-05.   Regards,   DC South France', 'Promotion Support - Request 8k Hydrating Conditioner 200ml', 'NEW', '2025-10-31 14:37:45.434518');
+INSERT INTO public.dc_requests VALUES ('f4fb1d50-5fa6-431b-aeb4-48bbb33f5e1f', 'DC South France', 'CONDITIONER_HYDRATE_200', 8000.00, '2025-11-05', 'Hello Planning Team,   Could you please plan an additional 8,000 cases of CONDITIONER_HYDRATE_200 for the upcoming campaign starting 2025-11-03?   Preferred ship date: 2025-11-05.   Regards,   DC South France', 'Promotion Support - Request 8k Hydrating Conditioner 200ml', 'NEW', '2025-10-31 14:44:32.53168');
+INSERT INTO public.dc_requests VALUES ('49b87214-ca28-4a6a-84be-5a5df8385685', 'DC South France', 'CONDITIONER_HYDRATE_200', 8000.00, '2025-11-05', 'Hello Planning Team,   Could you please plan an additional 8,000 cases of CONDITIONER_HYDRATE_200 for the upcoming campaign starting 2025-11-03?   Preferred ship date: 2025-11-05.   Regards,   DC South France', 'Promotion Support - Request 8k Hydrating Conditioner 200ml', 'NEW', '2025-11-03 08:59:10.382476');
+INSERT INTO public.dc_requests VALUES ('652cd881-e060-4f5a-94ca-5918a05a70f3', 'DC South France', 'CONDITIONER_HYDRATE_200', 8000.00, '2025-11-05', 'Hello Planning Team,   Could you please plan an additional 8,000 cases of CONDITIONER_HYDRATE_200 for the upcoming campaign starting 2025-11-03?   Preferred ship date: 2025-11-05.   Regards,   DC South France', 'Promotion Support - Request 8k Hydrating Conditioner 200ml', 'NEW', '2025-11-03 09:26:40.747452');
+INSERT INTO public.dc_requests VALUES ('6fc0f1eb-f7a0-4605-be90-00271f3106b8', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning,  The South DC needs 20,000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then?  Best, DC South France', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 09:27:46.035121');
+INSERT INTO public.dc_requests VALUES ('d6c2d135-36ea-403d-8ac2-2368b1bcb128', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning,  The South DC needs 20,000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then?  Best, DC South France', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 09:36:21.00463');
+INSERT INTO public.dc_requests VALUES ('cde16e68-13c8-434a-82a0-37c2091d1a37', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning,  The South DC needs 20,000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then?  Best, DC South France', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 09:37:29.462575');
+INSERT INTO public.dc_requests VALUES ('8ba3afd2-d7c4-4eda-81f1-6f05b238215f', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning,  The South DC needs 20,000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then?  Best, DC South France', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 09:37:36.242002');
+INSERT INTO public.dc_requests VALUES ('f8452da1-6ab0-4ae6-9a2c-fb22c34c6978', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning,  The South DC needs 20,000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then?  Best, DC South France', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 09:56:58.241882');
+INSERT INTO public.dc_requests VALUES ('b4fecbae-a485-45e9-b189-5d067594b239', 'South DC', 'CONDITIONER_HYDRATE_200', 2000000.00, '2025-11-07', 'Hello Planning,  The South DC needs 2000000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then?  Best, DC South France', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 09:57:34.718059');
+INSERT INTO public.dc_requests VALUES ('b437480d-4b4c-4439-a405-23ab98c1e5ea', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-03', 'Hi team,  Please support us with 15,000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 09:58:17.427722');
+INSERT INTO public.dc_requests VALUES ('287d524a-181b-4a8f-9e33-97f85c40f737', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-01', 'Hi team,  Please support us with 15000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 09:59:09.665325');
+INSERT INTO public.dc_requests VALUES ('6a0c4021-5487-447a-bffa-328ce4f86987', 'DC Central France', 'SHAMPOO_TRAVEL_100', 900000.00, '2025-11-01', 'Hi team,  Please support us with 900000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 09:59:45.318645');
+INSERT INTO public.dc_requests VALUES ('79cf1609-c3c7-4e65-b075-dd186058f5df', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-01', 'Hi team,  Please support us with 15000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:00:55.970732');
+INSERT INTO public.dc_requests VALUES ('307cb0ce-62d2-4671-86a2-cf09adb6e988', 'DC Central France', 'SHAMPOO_TRAVEL_100', 9000000.00, '2025-11-01', 'Hi team,  Please support us with 9000000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:02:18.151342');
+INSERT INTO public.dc_requests VALUES ('dad4d92b-93e5-454d-8c9a-791164f69db4', 'DC Central France', 'SHAMPOO_TRAVEL_100', 1000.00, '2025-11-01', 'Hi team,  Please support us with 1000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:02:47.684916');
+INSERT INTO public.dc_requests VALUES ('cf2ae7cb-3ef5-484d-ba28-c0fa42ca0fda', 'DC West France', 'SKINCREAM_HYDRATE_100', 8000.00, '2025-11-08', 'Hello Plant Team,  We require 8,000 cases of SKINCREAM_HYDRATE_100 for a special order to ship by 2025-11-08. Please confirm if this is possible.  Regards, DC West France', 'Need 8k Hydration Face Cream before 2025-11-08', 'NEW', '2025-11-03 10:09:10.532484');
+INSERT INTO public.dc_requests VALUES ('f88d99af-d99a-403c-9dd2-e7919edd301b', 'DC West France', 'SKINCREAM_HYDRATE_100', 8000.00, '2025-11-08', 'Hello Plant Team,  We require 8,000 cases of SKINCREAM_HYDRATE_100 for a special order to ship by 2025-11-08. Please confirm if this is possible.  Regards, DC West France', 'Need 8k Hydration Face Cream before 2025-11-08', 'NEW', '2025-11-03 10:16:24.700344');
+INSERT INTO public.dc_requests VALUES ('6fff836e-6411-446a-8cfa-66afe580fa73', 'DC West France', 'SKINCREAM_HYDRATE_100', 8000.00, '2025-11-08', 'Hello Plant Team,  We require 8,000 cases of SKINCREAM_HYDRATE_100 for a special order to ship by 2025-11-08. Please confirm if this is possible.  Regards, DC West France', 'Need 8k Hydration Face Cream before 2025-11-08', 'NEW', '2025-11-03 10:23:32.760005');
+INSERT INTO public.dc_requests VALUES ('aad731c2-4f3d-4635-98a1-cf61c8497d8a', 'DC West France', 'SKINCREAM_HYDRATE_100', 8000.00, '2025-11-08', 'Hello Plant Team,  We require 8,000 cases of SKINCREAM_HYDRATE_100 for a special order to ship by 2025-11-08. Please confirm if this is possible.  Regards, DC West France', 'Need 8k Hydration Face Cream before 2025-11-08', 'NEW', '2025-11-03 10:24:26.401172');
+INSERT INTO public.dc_requests VALUES ('29fb2646-9e60-4b20-a7ae-4108c840a936', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-03', 'Hi team,  Please support us with 15,000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:26:56.240357');
+INSERT INTO public.dc_requests VALUES ('a415d3e6-27a9-4dd2-a141-a08d767dac76', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-03', 'Hi team,  Please support us with 15,000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:30:23.807775');
+INSERT INTO public.dc_requests VALUES ('1471245c-08d8-4217-a56c-c9da1bc9d135', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-03', 'Hi team,  Please support us with 15,000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:31:18.604091');
+INSERT INTO public.dc_requests VALUES ('18beed8c-4017-41cb-96ec-e01313154eff', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-03', 'Hi team,  Please support us with 15,000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:33:38.187496');
+INSERT INTO public.dc_requests VALUES ('01924c64-9dc9-45f3-a097-c5f7ada687ba', 'DC Central France', 'SHAMPOO_TRAVEL_100', 15000.00, '2025-11-03', 'Hi team,  Please support us with 15,000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:51:15.287702');
+INSERT INTO public.dc_requests VALUES ('41215643-45ff-4778-982f-7d42cf3cbbec', 'DC Central France', 'SHAMPOO_TRAVEL_100', 1500000.00, '2025-11-03', 'Hi team,  Please support us with 1500000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:51:29.009729');
+INSERT INTO public.dc_requests VALUES ('164a3d6b-0335-4740-bb39-8b33ca1b0b76', 'DC Central France', 'SHAMPOO_TRAVEL_100', 150.00, '2025-11-03', 'Hi team,  Please support us with 150 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 10:51:47.96345');
+INSERT INTO public.dc_requests VALUES ('e8edb437-e5df-4a26-a4ad-566a31171f3b', 'DC Central France', 'SHAMPOO_TRAVEL_100', 150.00, '2025-11-03', 'Hi team,  Please support us with 150 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-03. This is for an upcoming national retail activation.  Thank you, DC Central France', 'Promo Request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 11:26:56.422752');
+INSERT INTO public.dc_requests VALUES ('14f229a6-2278-4708-a194-5af6191ee4c3', 'DC Central France', 'SHAMPOO_TRAVEL_100', 9000.00, '2025-11-01', 'Hi team,  Please support us with 9000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'another request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 11:27:48.542993');
+INSERT INTO public.dc_requests VALUES ('8571ef3b-355f-45f7-a41e-060ce4cf3f1f', 'DC Central France', 'SHAMPOO_TRAVEL_100', 9000.00, '2025-11-01', 'Hi team,  Please support us with 9000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'another request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 11:37:46.263708');
+INSERT INTO public.dc_requests VALUES ('58058dfc-8aad-4160-a9b5-7b19424b9fe8', 'DC Central France', 'SHAMPOO_TRAVEL_100', 9000.00, '2025-11-01', 'Hi team,  Please support us with 9000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'another request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 11:42:22.048179');
+INSERT INTO public.dc_requests VALUES ('f1e22ac3-4603-4e10-a15e-d77dfc119a44', 'DC Central France', 'SHAMPOO_TRAVEL_100', 1000.00, '2025-11-01', 'Hi team,  Please support us with 1000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'another request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 11:50:59.337372');
+INSERT INTO public.dc_requests VALUES ('d965b280-6e39-4816-991b-edb5d6c2c690', 'DC Central France', 'SHAMPOO_TRAVEL_100', 1000000.00, '2025-11-01', 'Hi team,  Please support us with 1000000 cases of SHAMPOO_TRAVEL_100 to be delivered before 2025-11-01. This is for an upcoming national retail activation.  Thank you, DC Central France', 'another request - 15k Daily Clean Shampoo', 'NEW', '2025-11-03 11:51:19.418765');
+INSERT INTO public.dc_requests VALUES ('ce435b52-a686-4f90-9b0d-ef2f8cd0de59', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning, The South DC needs 20000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then? Best, DC South', 'Request for 20k Hydrating Conditioner for South campaign', 'NEW', '2025-11-03 11:56:12.816621');
+INSERT INTO public.dc_requests VALUES ('e94dc0b3-fbae-49ce-9718-9dd4f7be3df9', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning, The South DC needs 20000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then? Best, DC South', 'urgent request - can you help us please', 'NEW', '2025-11-03 12:01:11.696386');
+INSERT INTO public.dc_requests VALUES ('249c7680-3b61-43fc-a305-60f953f404ba', 'DC East', 'SHAMPOO_CITRUS_200', 10000.00, '2025-11-06', 'Hi Planning Team, We urgently need 10000 cases of SHAMPOO_CITRUS_200 for Black Friday shipments. Target ship date: 2025-11-06. Please confirm if you can fully cover this quantity. Thanks, DC East', 'Urgent Request - 10k Citrus Shampoo for Black Friday', 'NEW', '2025-11-03 12:04:12.009771');
+INSERT INTO public.dc_requests VALUES ('822398c6-cba5-40f2-985e-be2ac7fc015e', 'South DC', 'CONDITIONER_HYDRATE_200', 20000.00, '2025-11-07', 'Hello Planning, The South DC needs 20000 cases of CONDITIONER_HYDRATE_200 for a campaign starting 2025-11-07. Could you let us know if we can ship full or partial quantity by then? Best, DC South', 'urgent request - can you help us please', 'NEW', '2025-11-06 17:06:02.001767');
+
+
+--
+-- TOC entry 4378 (class 0 OID 16606)
+-- Dependencies: 228
+-- Data for Name: dc_request_scenarios; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.dc_request_scenarios VALUES ('0e9d846e-5f5d-4fa0-bd4c-c2094a336741', '6e157eaa-ddea-4369-92a4-35347df92575', 'Scenario 1', '2025-10-29', 12000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-10-29 15:20:34.248');
+INSERT INTO public.dc_request_scenarios VALUES ('5068cd5d-96d5-44b3-85fc-8abca8b9ef47', '6e157eaa-ddea-4369-92a4-35347df92575', 'Scenario 1', '2025-10-29', 12000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-10-29 15:33:41.018');
+INSERT INTO public.dc_request_scenarios VALUES ('520450e1-0457-4da2-9922-46e93912b882', 'f8452da1-6ab0-4ae6-9a2c-fb22c34c6978', 'Scenario 1', '2025-11-03', 20000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 09:56:58.367');
+INSERT INTO public.dc_request_scenarios VALUES ('042b9776-01c3-4ab2-a2b7-9ee12d9fe4e3', 'b4fecbae-a485-45e9-b189-5d067594b239', 'Scenario 1', '2025-11-03', 2000000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 09:57:34.863');
+INSERT INTO public.dc_request_scenarios VALUES ('510b933b-6950-492d-a2c7-8cd173a601d7', 'b437480d-4b4c-4439-a405-23ab98c1e5ea', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 09:58:17.554');
+INSERT INTO public.dc_request_scenarios VALUES ('7a509a69-b148-4956-846d-9d28479d8983', '287d524a-181b-4a8f-9e33-97f85c40f737', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 09:59:09.784');
+INSERT INTO public.dc_request_scenarios VALUES ('df9c26cd-c7f1-4d46-a8bb-4c98900d47a9', '6a0c4021-5487-447a-bffa-328ce4f86987', 'Scenario 1', '2025-11-03', 900000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 09:59:45.447');
+INSERT INTO public.dc_request_scenarios VALUES ('3b2c6ed6-ebf7-437e-99a5-bcccb543bdb1', '79cf1609-c3c7-4e65-b075-dd186058f5df', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:00:56.089');
+INSERT INTO public.dc_request_scenarios VALUES ('c21af7ca-36ab-45bf-abce-b109bc5ad434', '307cb0ce-62d2-4671-86a2-cf09adb6e988', 'Scenario 1', '2025-11-03', 9000000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:02:18.288');
+INSERT INTO public.dc_request_scenarios VALUES ('99f1d81f-0099-4f7c-aad4-aacffe939aad', 'dad4d92b-93e5-454d-8c9a-791164f69db4', 'Scenario 1', '2025-11-03', 1000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:02:47.796');
+INSERT INTO public.dc_request_scenarios VALUES ('aa13a4f7-1a91-44cf-a5a6-3278ff3da0d5', 'cf2ae7cb-3ef5-484d-ba28-c0fa42ca0fda', 'Scenario 1', '2025-11-03', 8000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:09:10.681');
+INSERT INTO public.dc_request_scenarios VALUES ('650acb1f-5f35-4768-bbb5-c9dde59ced7e', 'f88d99af-d99a-403c-9dd2-e7919edd301b', 'Scenario 1', '2025-11-03', 8000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:16:24.823');
+INSERT INTO public.dc_request_scenarios VALUES ('2d4d5141-84c8-4d87-8640-29f11dfd284e', '6fff836e-6411-446a-8cfa-66afe580fa73', 'Scenario 1', '2025-11-03', 8000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:23:32.878');
+INSERT INTO public.dc_request_scenarios VALUES ('c8a4e7c3-51c5-4acb-b4b9-16890ef7cccf', 'aad731c2-4f3d-4635-98a1-cf61c8497d8a', 'Scenario 1', '2025-11-03', 8000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:24:26.53');
+INSERT INTO public.dc_request_scenarios VALUES ('d6e0ce80-1321-4509-8311-646dd4d7cb71', '29fb2646-9e60-4b20-a7ae-4108c840a936', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:26:56.37');
+INSERT INTO public.dc_request_scenarios VALUES ('f74d6772-75d9-4a02-b44c-92c823d848d8', 'a415d3e6-27a9-4dd2-a141-a08d767dac76', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:30:23.927');
+INSERT INTO public.dc_request_scenarios VALUES ('b7675406-eac0-4058-b401-c5de69bb4250', '1471245c-08d8-4217-a56c-c9da1bc9d135', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:31:18.717');
+INSERT INTO public.dc_request_scenarios VALUES ('42caf4bf-67d7-4de3-b142-678cd4d3f03c', '18beed8c-4017-41cb-96ec-e01313154eff', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:33:38.301');
+INSERT INTO public.dc_request_scenarios VALUES ('5e3f5942-efa4-412d-98da-918470ebedc7', '01924c64-9dc9-45f3-a097-c5f7ada687ba', 'Scenario 1', '2025-11-03', 15000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:51:15.407');
+INSERT INTO public.dc_request_scenarios VALUES ('90d51026-42cb-4e3c-a00f-1cbc1a762d5b', '41215643-45ff-4778-982f-7d42cf3cbbec', 'Scenario 1', '2025-11-03', 1500000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:51:29.145');
+INSERT INTO public.dc_request_scenarios VALUES ('6e8d7597-6d01-496a-90a4-63ec67367c6e', '164a3d6b-0335-4740-bb39-8b33ca1b0b76', 'Scenario 1', '2025-11-03', 150.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 10:51:48.076');
+INSERT INTO public.dc_request_scenarios VALUES ('2b96b3b2-be65-4196-bde5-b40ae46e0853', 'e8edb437-e5df-4a26-a4ad-566a31171f3b', 'Scenario 1', '2025-11-03', 150.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:26:56.535');
+INSERT INTO public.dc_request_scenarios VALUES ('204a3f0d-3874-4966-a71b-1937ce1edb40', '14f229a6-2278-4708-a194-5af6191ee4c3', 'Scenario 1', '2025-11-03', 9000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:27:48.655');
+INSERT INTO public.dc_request_scenarios VALUES ('3a633f81-ae4b-4fdf-a8e9-9b0af8f178c7', '8571ef3b-355f-45f7-a41e-060ce4cf3f1f', 'Scenario 1', '2025-11-03', 9000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:37:46.375');
+INSERT INTO public.dc_request_scenarios VALUES ('edf5bf8b-1e27-4216-914b-d8979d9b1ce3', '58058dfc-8aad-4160-a9b5-7b19424b9fe8', 'Scenario 1', '2025-11-03', 9000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:42:22.166');
+INSERT INTO public.dc_request_scenarios VALUES ('6b947c35-53dd-438a-a8ea-432c23e7667f', 'f1e22ac3-4603-4e10-a15e-d77dfc119a44', 'Scenario 1', '2025-11-03', 1000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:50:59.467');
+INSERT INTO public.dc_request_scenarios VALUES ('510f19d4-4274-4721-9ca5-4dace3a23edb', 'd965b280-6e39-4816-991b-edb5d6c2c690', 'Scenario 1', '2025-11-03', 1000000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:51:19.558');
+INSERT INTO public.dc_request_scenarios VALUES ('ff62d3da-d011-4850-bfa1-79bbde503e29', 'ce435b52-a686-4f90-9b0d-ef2f8cd0de59', 'Scenario 1', '2025-11-03', 20000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 11:56:12.937');
+INSERT INTO public.dc_request_scenarios VALUES ('308d0763-0f8f-45b5-888b-8261043f78ba', 'e94dc0b3-fbae-49ce-9718-9dd4f7be3df9', 'Scenario 1', '2025-11-03', 20000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 12:01:11.813');
+INSERT INTO public.dc_request_scenarios VALUES ('ac48f869-624b-4ed7-b5aa-61e24aa78a5b', '249c7680-3b61-43fc-a305-60f953f404ba', 'Scenario 1', '2025-11-03', 10000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-03 12:04:12.126');
+INSERT INTO public.dc_request_scenarios VALUES ('93033fe5-3cf5-4065-b89c-ee7512b3f15f', '822398c6-cba5-40f2-985e-be2ac7fc015e', 'Scenario 1', '2025-11-06', 20000.00, 100.00, 0.00, false, 'Auto-generated scenario', false, '2025-11-06 17:06:02.208');
+
+
+--
+-- TOC entry 4376 (class 0 OID 16564)
+-- Dependencies: 226
+-- Data for Name: inventory_materials; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.inventory_materials VALUES ('BASE_SHAMPOO', 5000);
+INSERT INTO public.inventory_materials VALUES ('BASE_CONDITIONER', 2500);
+INSERT INTO public.inventory_materials VALUES ('BASE_SKINCREAM', 1200);
+INSERT INTO public.inventory_materials VALUES ('FRAGRANCE_CITRUS', 200);
+INSERT INTO public.inventory_materials VALUES ('BOTTLE_200ML_CLEAR', 70000);
+INSERT INTO public.inventory_materials VALUES ('BOTTLE_100ML_CLEAR', 60000);
+INSERT INTO public.inventory_materials VALUES ('JAR_100ML_FROST', 30000);
+INSERT INTO public.inventory_materials VALUES ('PUMP_200ML_WHITE', 70000);
+INSERT INTO public.inventory_materials VALUES ('CAP_JAR_100ML', 30000);
+INSERT INTO public.inventory_materials VALUES ('LABEL_200ML', 140000);
+INSERT INTO public.inventory_materials VALUES ('LABEL_100ML', 120000);
+INSERT INTO public.inventory_materials VALUES ('CARTON_100ML', 60000);
+
+
+--
+-- TOC entry 4370 (class 0 OID 16496)
+-- Dependencies: 220
+-- Data for Name: lines; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.lines VALUES ('LINE_1', 'Line 1 - High Speed Filler', 36000);
+INSERT INTO public.lines VALUES ('LINE_2', 'Line 2 - Versatile Filler/Labeler', 30000);
+INSERT INTO public.lines VALUES ('LINE_3', 'Line 3 - Multipurpose Line', 24000);
+
+
+--
+-- TOC entry 4371 (class 0 OID 16503)
+-- Dependencies: 221
+-- Data for Name: line_capability; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.line_capability VALUES ('LINE_1', 'SHAMPOO_CITRUS_200', 1500);
+INSERT INTO public.line_capability VALUES ('LINE_2', 'SHAMPOO_CITRUS_200', 1200);
+INSERT INTO public.line_capability VALUES ('LINE_3', 'SHAMPOO_CITRUS_200', 800);
+INSERT INTO public.line_capability VALUES ('LINE_1', 'CONDITIONER_HYDRATE_200', 1400);
+INSERT INTO public.line_capability VALUES ('LINE_2', 'CONDITIONER_HYDRATE_200', 1100);
+INSERT INTO public.line_capability VALUES ('LINE_3', 'CONDITIONER_HYDRATE_200', 750);
+INSERT INTO public.line_capability VALUES ('LINE_1', 'SHAMPOO_TRAVEL_100', 1300);
+INSERT INTO public.line_capability VALUES ('LINE_2', 'SHAMPOO_TRAVEL_100', 1000);
+INSERT INTO public.line_capability VALUES ('LINE_3', 'SHAMPOO_TRAVEL_100', 700);
+INSERT INTO public.line_capability VALUES ('LINE_1', 'SKINCREAM_HYDRATE_100', 900);
+INSERT INTO public.line_capability VALUES ('LINE_2', 'SKINCREAM_HYDRATE_100', 800);
+INSERT INTO public.line_capability VALUES ('LINE_3', 'SKINCREAM_HYDRATE_100', 600);
+
+
+--
+-- TOC entry 4373 (class 0 OID 16521)
+-- Dependencies: 223
+-- Data for Name: schedule; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.schedule VALUES (1, 'LINE_1', '2025-10-27', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (2, 'LINE_1', '2025-10-27', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (3, 'LINE_1', '2025-10-27', 'SHAMPOO_CITRUS_200', 9000, true);
+INSERT INTO public.schedule VALUES (4, 'LINE_2', '2025-10-27', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (5, 'LINE_2', '2025-10-27', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (6, 'LINE_2', '2025-10-27', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (7, 'LINE_3', '2025-10-27', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (8, 'LINE_3', '2025-10-27', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (9, 'LINE_3', '2025-10-27', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (10, 'LINE_1', '2025-10-28', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (11, 'LINE_1', '2025-10-28', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (12, 'LINE_1', '2025-10-28', 'SHAMPOO_CITRUS_200', 9000, true);
+INSERT INTO public.schedule VALUES (13, 'LINE_2', '2025-10-28', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (14, 'LINE_2', '2025-10-28', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (15, 'LINE_2', '2025-10-28', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (16, 'LINE_3', '2025-10-28', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (17, 'LINE_3', '2025-10-28', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (18, 'LINE_3', '2025-10-28', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (19, 'LINE_1', '2025-10-29', 'CONDITIONER_HYDRATE_200', 12000, true);
+INSERT INTO public.schedule VALUES (20, 'LINE_1', '2025-10-29', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (21, 'LINE_1', '2025-10-29', 'SHAMPOO_CITRUS_200', 9000, false);
+INSERT INTO public.schedule VALUES (22, 'LINE_2', '2025-10-29', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (23, 'LINE_2', '2025-10-29', 'SKINCREAM_HYDRATE_100', 9000, true);
+INSERT INTO public.schedule VALUES (24, 'LINE_2', '2025-10-29', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (25, 'LINE_3', '2025-10-29', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (26, 'LINE_3', '2025-10-29', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (27, 'LINE_3', '2025-10-29', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (28, 'LINE_1', '2025-10-30', 'SHAMPOO_CITRUS_200', 20000, true);
+INSERT INTO public.schedule VALUES (29, 'LINE_1', '2025-10-30', 'SHAMPOO_CITRUS_200', 10000, true);
+INSERT INTO public.schedule VALUES (30, 'LINE_1', '2025-10-30', 'CONDITIONER_HYDRATE_200', 6000, false);
+INSERT INTO public.schedule VALUES (31, 'LINE_2', '2025-10-30', 'CONDITIONER_HYDRATE_200', 10000, false);
+INSERT INTO public.schedule VALUES (32, 'LINE_2', '2025-10-30', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (33, 'LINE_2', '2025-10-30', 'SKINCREAM_HYDRATE_100', 8000, true);
+INSERT INTO public.schedule VALUES (34, 'LINE_3', '2025-10-30', 'SHAMPOO_TRAVEL_100', 12000, true);
+INSERT INTO public.schedule VALUES (35, 'LINE_3', '2025-10-30', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (36, 'LINE_3', '2025-10-30', 'SKINCREAM_HYDRATE_100', 4000, false);
+INSERT INTO public.schedule VALUES (37, 'LINE_1', '2025-10-31', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (38, 'LINE_1', '2025-10-31', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (39, 'LINE_1', '2025-10-31', 'SHAMPOO_CITRUS_200', 9000, false);
+INSERT INTO public.schedule VALUES (40, 'LINE_2', '2025-10-31', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (41, 'LINE_2', '2025-10-31', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (42, 'LINE_2', '2025-10-31', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (43, 'LINE_3', '2025-10-31', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (44, 'LINE_3', '2025-10-31', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (45, 'LINE_3', '2025-10-31', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (46, 'LINE_1', '2025-11-01', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (47, 'LINE_1', '2025-11-01', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (48, 'LINE_1', '2025-11-01', 'SHAMPOO_CITRUS_200', 9000, true);
+INSERT INTO public.schedule VALUES (49, 'LINE_2', '2025-11-01', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (50, 'LINE_2', '2025-11-01', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (51, 'LINE_2', '2025-11-01', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (52, 'LINE_3', '2025-11-01', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (53, 'LINE_3', '2025-11-01', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (54, 'LINE_3', '2025-11-01', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (55, 'LINE_1', '2025-11-02', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (56, 'LINE_1', '2025-11-02', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (57, 'LINE_1', '2025-11-02', 'SHAMPOO_CITRUS_200', 9000, true);
+INSERT INTO public.schedule VALUES (58, 'LINE_2', '2025-11-02', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (59, 'LINE_2', '2025-11-02', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (60, 'LINE_2', '2025-11-02', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (61, 'LINE_3', '2025-11-02', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (62, 'LINE_3', '2025-11-02', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (63, 'LINE_3', '2025-11-02', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (64, 'LINE_1', '2025-11-03', 'CONDITIONER_HYDRATE_200', 12000, true);
+INSERT INTO public.schedule VALUES (65, 'LINE_1', '2025-11-03', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (66, 'LINE_1', '2025-11-03', 'SHAMPOO_CITRUS_200', 9000, false);
+INSERT INTO public.schedule VALUES (67, 'LINE_2', '2025-11-03', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (68, 'LINE_2', '2025-11-03', 'SKINCREAM_HYDRATE_100', 9000, true);
+INSERT INTO public.schedule VALUES (69, 'LINE_2', '2025-11-03', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (70, 'LINE_3', '2025-11-03', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (71, 'LINE_3', '2025-11-03', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (72, 'LINE_3', '2025-11-03', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (73, 'LINE_1', '2025-11-04', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (74, 'LINE_1', '2025-11-04', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (75, 'LINE_1', '2025-11-04', 'SHAMPOO_CITRUS_200', 9000, true);
+INSERT INTO public.schedule VALUES (76, 'LINE_2', '2025-11-04', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (77, 'LINE_2', '2025-11-04', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (78, 'LINE_2', '2025-11-04', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (79, 'LINE_3', '2025-11-04', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (80, 'LINE_3', '2025-11-04', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (81, 'LINE_3', '2025-11-04', 'SKINCREAM_HYDRATE_100', 6000, false);
+INSERT INTO public.schedule VALUES (82, 'LINE_1', '2025-11-05', 'SHAMPOO_CITRUS_200', 15000, true);
+INSERT INTO public.schedule VALUES (83, 'LINE_1', '2025-11-05', 'CONDITIONER_HYDRATE_200', 12000, false);
+INSERT INTO public.schedule VALUES (84, 'LINE_1', '2025-11-05', 'SHAMPOO_CITRUS_200', 9000, true);
+INSERT INTO public.schedule VALUES (85, 'LINE_2', '2025-11-05', 'SKINCREAM_HYDRATE_100', 12000, true);
+INSERT INTO public.schedule VALUES (86, 'LINE_2', '2025-11-05', 'CONDITIONER_HYDRATE_200', 9000, false);
+INSERT INTO public.schedule VALUES (87, 'LINE_2', '2025-11-05', 'SKINCREAM_HYDRATE_100', 9000, false);
+INSERT INTO public.schedule VALUES (88, 'LINE_3', '2025-11-05', 'SHAMPOO_TRAVEL_100', 10000, true);
+INSERT INTO public.schedule VALUES (89, 'LINE_3', '2025-11-05', 'SHAMPOO_TRAVEL_100', 8000, true);
+INSERT INTO public.schedule VALUES (90, 'LINE_3', '2025-11-05', 'SKINCREAM_HYDRATE_100', 6000, false);
+
+
+--
+-- TOC entry 4368 (class 0 OID 16479)
+-- Dependencies: 218
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: FLowKaUser
+--
+
+INSERT INTO public.users VALUES (1, 'Alice', 'alice@example.com', '2025-10-24 15:55:09.51948');
+INSERT INTO public.users VALUES (2, 'Bob', 'bob@example.com', '2025-10-24 15:55:09.51948');
+INSERT INTO public.users VALUES (3, 'Mohamed', 'Mohamed@example.com', '2025-10-24 15:55:09.51948');
+INSERT INTO public.users VALUES (4, 'Charlie', 'charlie@example.com', '2025-10-24 15:55:09.51948');
+
+
+--
+-- TOC entry 4385 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: schedule_sched_id_seq; Type: SEQUENCE SET; Schema: public; Owner: FLowKaUser
+--
+
+SELECT pg_catalog.setval('public.schedule_sched_id_seq', 90, true);
+
+
+--
+-- TOC entry 4386 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: FLowKaUser
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+
+
+-- Completed on 2025-11-11 18:04:35
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict LfjalkVuSap3t1bP7mXBnYJrgqPaBmo9nxRG5GM4IwSG46yEh6nqQfZSa0dP8Br
+
