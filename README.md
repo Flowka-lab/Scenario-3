@@ -118,6 +118,7 @@ requirements.txt            # Python dependencies
 FlowKa-Lab_Scenario-3.json  # n8n workflow export
 data/                       # SQL schema + seed data
 docs/                       # Documentation & diagrams (planned)
+n8n/                        # Workflow (n8n automation)
 .env.sample                 # Environment variable template
 LICENSE                     # MIT License
 ```
